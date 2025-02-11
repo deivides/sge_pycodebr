@@ -1,0 +1,68 @@
+<style>
+    .no-wrap {
+      white-space: nowrap;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      min-height: 50px;
+      width: 100%;
+      word-break: break-word; 
+    }
+  
+  .card-text {
+    font-size: 1.8rem;    
+    word-wrap: break-word;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  .col-md-3 {
+    flex: 1;
+  }
+    
+    </style>
+  
+  <div class="card mt-4">
+    <div class="card-body">
+      <div class="row">
+  
+        <div class="col-md-3">
+          <div class="card bg-primary">
+            <div class="card-body">
+              <h5 class="card-title">Quantidade de vendas</h5>
+              <p class="card-text text-white font-weight-bold display-6 no-wrap">{{ sales_metrics.total_sales }}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-3">
+          <div class="card bg-danger">
+            <div class="card-body">
+              <h5 class="card-title">Produtos vendidos</h5>
+              <p class="card-text text-white font-weight-bold display-6 no-wrap">{{ sales_metrics.total_products_sold }}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-3">
+          <div class="card bg-success">
+            <div class="card-body">
+              <h5 class="card-title">Valor das vendas</h5>
+              <p class="card-text text-white font-weight-bold display-6 no-wrap">R$ {{ sales_metrics.total_sales_value }}</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="col-md-3">
+          <div class="card bg-warning">
+            <div class="card-body">
+              <h5 class="card-title">Lucro das vendas</h5>
+              <p class="card-text text-white font-weight-bold display-6 no-wrap">R$ {{ sales_metrics.total_sales_profit }}</p>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </div>
