@@ -1,35 +1,59 @@
-# Sistema de Gestão de Estoque (SGE)
+Inventory Management System (SGE)
 
-Bem-vindo ao Sistema de Gestão de Estoque (SGE), um projeto desenvolvido em Django e Bootstrap para facilitar o gerenciamento de estoque. Este README fornece informações essenciais sobre como configurar e executar o projeto em seu ambiente local.
+Welcome to the Inventory Management System (SGE), a web application built with Django and Bootstrap to simplify stock management. This README provides essential information on how to set up and run the project locally using Docker or a traditional setup.
+📌 Requirements
 
-## Requisitos
+Make sure you have the following installed on your system:
 
-Certifique-se de que você tenha os seguintes requisitos instalados em seu sistema:
+    Python (Recommended version: 3.7 or higher)
+    Docker & Docker Compose (if running with containers)
+    Other dependencies listed in requirements.txt
 
-- Python (versão recomendada: 3.7 ou superior)
-- Django (instalado automaticamente ao seguir as instruções abaixo)
-- Outras dependências listadas no arquivo `requirements.txt`
+⚙️ Setup & Installation
+1️⃣ Running with Docker (Recommended)
 
+To quickly set up and run the project using Docker, follow these steps:
 
-## Instalação das Dependências
+    Clone the repository:
 
-Com o ambiente virtual ativado, instale as dependências do projeto usando o comando:
-```bash
+git clone https://github.com/your-username/inventory-management.git
+cd inventory-management
+
+Build and start the containers:
+
+    docker-compose up --build
+
+    Once the process completes, the application will be available at:
+    👉 http://localhost:8000
+
+2️⃣ Running Without Docker (Manual Setup)
+
+If you prefer running the project manually, follow these steps:
+
+    Create and activate a virtual environment:
+
+python -m venv venv
+source venv/bin/activate  # On macOS/Linux
+venv\Scripts\activate     # On Windows
+
+Install dependencies:
+
 pip install -r requirements.txt
-```
 
+Apply database migrations:
 
-## Rodar o projeto
-
-Após instalar as dependências, aplique as migrations no banco de dados com o comando:
-```bash
 python manage.py migrate
-```
 
-Agora o projeto jã pode ser inicializado com o comando:
-```bash
-python manage.py runserver
-```
+Start the development server:
 
-Após isso, o sistema estará pronto para ser acessado em:
-[http://localhost:8000](http://localhost:8000)
+    python manage.py runserver
+
+    Access the system at:
+    👉 http://localhost:8000
+
+🛠️ Technologies Used
+
+    Django – Backend framework for building web applications
+    Bootstrap – Frontend framework for a responsive UI
+    PostgreSQL / SQLite – Database (depending on configuration)
+    Docker & Docker Compose – For containerized deployment
