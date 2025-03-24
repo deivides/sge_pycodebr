@@ -44,8 +44,11 @@ Once the process completes, the application will be available at:
 🛠️ Technologies Used:
 
    🐍 Django – Backend framework for building web applications
+   
    🎨 Bootstrap – Frontend framework for a responsive UI
+   
    🗄 PostgreSQL / SQLite – Database (depending on configuration)
+   
    🐳 Docker & Docker Compose – For containerized deployment
     
 
