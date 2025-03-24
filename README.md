@@ -35,18 +35,18 @@ To quickly set up and run the project using **Docker**, follow these steps:
    cd inventory-management
 Build and start the containers:
 
-docker-compose up --build
+      docker-compose up --build
 
 Once the process completes, the application will be available at:
 
 👉 http://localhost:8000
 
-🛠️ Technologies Used
+🛠️ Technologies Used:
 
-    🐍 Django – Backend framework for building web applications
-    🎨 Bootstrap – Frontend framework for a responsive UI
-    🗄 PostgreSQL / SQLite – Database (depending on configuration)
-    🐳 Docker & Docker Compose – For containerized deployment
+   🐍 Django – Backend framework for building web applications
+   🎨 Bootstrap – Frontend framework for a responsive UI
+   🗄 PostgreSQL / SQLite – Database (depending on configuration)
+   🐳 Docker & Docker Compose – For containerized deployment
     
 
  
