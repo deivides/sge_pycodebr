@@ -1,0 +1,10 @@
+{# Sidebar link. Params: href, icon (bootstrap-icons name), label, match (substring of the current url_name that marks the link active) #}
+<li>
+  <a href="{{ href }}" {% if match in url_name %}aria-current="page"{% endif %}
+    class="group flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium motion-safe:transition focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none {% if match in url_name %}bg-gradient-to-r from-violet-600/30 via-indigo-600/20 to-transparent text-white ring-1 ring-white/10{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+    <span class="flex size-8 shrink-0 items-center justify-center rounded-lg {% if match in url_name %}bg-gradient-to-br from-violet-500 via-indigo-500 to-teal-400 text-white shadow-md shadow-indigo-900/50{% else %}bg-white/5 text-slate-400 ring-1 ring-white/10 group-hover:text-teal-300{% endif %}" aria-hidden="true">
+      <i class="bi bi-{{ icon }}"></i>
+    </span>
+    {{ label }}
+  </a>
+</li>

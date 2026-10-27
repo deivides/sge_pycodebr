@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Cadastrar marca{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-  <h3 class="display-6">Cadastrar Marca</h3>
-
-  <div class="card">
-    <div class="card-body">
-      <form method="post" class="form">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-primary">Salvar Marca</button>
-      </form>
-    </div>
-  </div>
-  <a href="{% url 'brand_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Marcas</a>  
-</div>
-
+  {% url 'brand_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Cadastrar marca' subtitle='Preencha os dados da nova marca.' back_url=list_url back_label='Marcas' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Salvar marca' cancel_url=list_url %}
 {% endblock %}

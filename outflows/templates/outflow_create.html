@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Registrar saída{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-  <h3 class="display-6">Cadastrar Saída</h3>
-
-  <div class="card">
-    <div class="card-body">
-      <form method="post" class="form">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-primary">Registrar Saída</button>
-      </form>
-    </div>
-  </div>
-  <a href="{% url 'outflow_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Saídas</a>  
-</div>
-
+  {% url 'outflow_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Registrar saída' subtitle='A quantidade informada será descontada do estoque do produto.' back_url=list_url back_label='Saídas' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Registrar saída' cancel_url=list_url %}
 {% endblock %}

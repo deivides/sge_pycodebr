@@ -12,6 +12,7 @@ urlpatterns = [
     path('api/v1/', include('authentication.urls')),
 
     path('', views.home, name='home'),
+    path('agent/insights/', views.agent_insights, name='agent_insights'),
     path('', include('brands.urls')),
     path('', include('categories.urls')),
     path('', include('suppliers.urls')),

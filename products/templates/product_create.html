@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Cadastrar produto{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-  <h3 class="display-6">Cadastrar Produto</h3>
-
-  <div class="card">
-    <div class="card-body">
-      <form method="post" class="form">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-primary">Salvar Produto</button>
-      </form>
-    </div>
-  </div>
-  <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Produtos</a>  
-</div>
-
+  {% url 'product_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Cadastrar produto' subtitle='Preencha os dados do novo produto. O estoque começa em zero e aumenta com as entradas.' back_url=list_url back_label='Produtos' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Salvar produto' cancel_url=list_url %}
 {% endblock %}

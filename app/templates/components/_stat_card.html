@@ -1,0 +1,12 @@
+{# KPI tile. Params: label, value, icon (bootstrap-icons name), accent (violet|teal|sky|amber|rose|emerald), prefix (optional, e.g. "R$") #}
+<div class="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl">
+  <div class="flex items-start justify-between gap-3">
+    <p class="text-sm font-medium text-slate-300">{{ label }}</p>
+    <span class="flex size-10 shrink-0 items-center justify-center rounded-xl ring-1 {% if accent == 'teal' %}bg-teal-500/15 text-teal-300 ring-teal-400/20{% elif accent == 'sky' %}bg-sky-500/15 text-sky-300 ring-sky-400/20{% elif accent == 'amber' %}bg-amber-500/15 text-amber-300 ring-amber-400/20{% elif accent == 'rose' %}bg-rose-500/15 text-rose-300 ring-rose-400/20{% elif accent == 'emerald' %}bg-emerald-500/15 text-emerald-300 ring-emerald-400/20{% else %}bg-violet-500/15 text-violet-300 ring-violet-400/20{% endif %}" aria-hidden="true">
+      <i class="bi bi-{{ icon }} text-lg"></i>
+    </span>
+  </div>
+  <p class="mt-3 truncate text-2xl font-bold tracking-tight text-white tabular-nums sm:text-3xl" title="{% if prefix %}{{ prefix }} {% endif %}{{ value }}">
+    {% if prefix %}<span class="mr-1 text-base font-semibold text-slate-400">{{ prefix }}</span>{% endif %}{{ value }}
+  </p>
+</div>

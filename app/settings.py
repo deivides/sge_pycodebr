@@ -99,7 +99,7 @@ DATABASES = {
         'NAME': 'sge',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'sge_db',
+        'HOST': os.getenv('DB_HOST', 'sge_db'),
         'PORT': '5432',
     },
     'dev': {

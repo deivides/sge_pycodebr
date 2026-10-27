@@ -1,38 +1,120 @@
 <!DOCTYPE html>
-<html lang="pt-br" data-bs-theme="dark">
+<html lang="pt-br" class="h-full scheme-dark">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
 
-  <title>{% block title %}{% endblock %}</title>
+  <title>{% block title %}SGE{% endblock %} | SGE - Sistema de Gestão de Estoque</title>
 
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  {# Restore the collapsed desktop sidebar before first paint to avoid a flash #}
+  <script>
+    try {
+      if (localStorage.getItem('sge-sidebar-collapsed') === '1') document.documentElement.classList.add('sidebar-collapsed');
+    } catch (e) {}
+  </script>
+
+  {# Tailwind Play CDN (pinned), same build as the login screen. #}
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  {# Styles for widgets rendered by Django forms (they carry the "form-control" class from forms.py). #}
+  <style type="text/tailwindcss">
+    /* Desktop sidebar hidden by the toggle (class on <html>) */
+    @custom-variant collapsed (.sidebar-collapsed &);
+
+    @layer components {
+      .form-control {
+        @apply block w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-2.5 text-base text-white placeholder:text-slate-400 motion-safe:transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/60 focus:outline-none;
+      }
+      .form-control[aria-invalid="true"] {
+        @apply border-red-400 focus:border-red-400 focus:ring-red-400/60;
+      }
+      select.form-control {
+        @apply appearance-none bg-no-repeat pr-10;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+        background-position: right 0.75rem center;
+        background-size: 1.1rem;
+      }
+    }
+  </style>
 </head>
 
-<body>
-  {% include 'components/_header.html' %}
+<body class="min-h-full bg-slate-950 text-slate-200 antialiased">
+  {# Decorative background, matching the login screen #}
+  <div aria-hidden="true" class="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950/60 to-slate-950">
+    <div class="absolute -top-40 -left-32 size-[28rem] rounded-full bg-violet-600/15 blur-3xl"></div>
+    <div class="absolute -right-32 -bottom-40 size-[30rem] rounded-full bg-teal-500/10 blur-3xl"></div>
+  </div>
 
-  <div class="container-fluid">
-
-  {% if user.is_authenticated and request.path != '/login/'  %}  
+  {% if user.is_authenticated %}
     {% include 'components/_sidebar.html' %}
-  {% endif %} 
+  {% endif %}
 
-    <div class="col py-3">
-      <div class="container mt-4">
-        <main>
-          {% block content %}
-          {% endblock %}
-        </main>
-      </div>
-    </div>
+  <div class="flex min-h-screen flex-col {% if user.is_authenticated %}motion-safe:transition-[padding] motion-safe:duration-300 lg:pl-72 lg:collapsed:pl-0{% endif %}">
+    {% include 'components/_header.html' %}
+
+    <main id="content" class="mx-auto w-full max-w-7xl flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+      {% block content %}
+      {% endblock %}
+    </main>
+
+    {% include 'components/_footer.html' %}
   </div>
 
-  </div>
-  {% include 'components/_footer.html' %}
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var sidebar = document.getElementById('sidebar');
+      var backdrop = document.getElementById('sidebar-backdrop');
+      var toggleBtn = document.getElementById('sidebar-toggle');
+      var closeBtn = document.getElementById('sidebar-close');
+      if (!sidebar || !toggleBtn) return;
+
+      var desktop = window.matchMedia('(min-width: 64rem)');
+      var drawerOpen = false;
+
+      // Mobile: off-canvas drawer. Desktop: collapsible column, remembered in localStorage.
+      function isVisible() {
+        return desktop.matches ? !root.classList.contains('sidebar-collapsed') : drawerOpen;
+      }
+
+      function sync() {
+        var visible = isVisible();
+        sidebar.classList.toggle('-translate-x-full', !drawerOpen);
+        backdrop.classList.toggle('hidden', desktop.matches || !drawerOpen);
+        document.body.classList.toggle('overflow-hidden', !desktop.matches && drawerOpen);
+        sidebar.inert = !visible;
+        toggleBtn.setAttribute('aria-expanded', visible ? 'true' : 'false');
+        toggleBtn.setAttribute('aria-label', visible ? 'Fechar menu' : 'Abrir menu');
+        toggleBtn.title = visible ? 'Fechar menu' : 'Abrir menu';
+      }
+
+      function setVisible(visible) {
+        if (desktop.matches) {
+          root.classList.toggle('sidebar-collapsed', !visible);
+          try { localStorage.setItem('sge-sidebar-collapsed', visible ? '0' : '1'); } catch (e) {}
+        } else {
+          drawerOpen = visible;
+        }
+        sync();
+        if (visible && !desktop.matches) closeBtn.focus();
+        if (!visible) toggleBtn.focus();
+      }
+
+      toggleBtn.addEventListener('click', function () { setVisible(!isVisible()); });
+      closeBtn.addEventListener('click', function () { setVisible(false); });
+      backdrop.addEventListener('click', function () { setVisible(false); });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !desktop.matches && drawerOpen) setVisible(false);
+      });
+      desktop.addEventListener('change', function () { drawerOpen = false; sync(); });
+      sync();
+    })();
+  </script>
+
+  {% block extra_js %}{% endblock %}
 </body>
 
 </html>

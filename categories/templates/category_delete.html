@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Excluir categoria{% endblock %}
+
 {% block content %}
-
-  <div calss="container mt-4">
-    <h3 class="display-6">Deletar Categoria</h3>
-
-    <div class="card">
-      <div class="card-body">
-        <P class="card-text">Tem certeza de que deseja excluir a categoria <strong>{{ object.name }}</strong>?</P>
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger">Deletar</button>
-        </form>
-        <a href="{% url 'category_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Categorias</a>
-      </div>
-    </div>
-  </div>
-
+  {% url 'category_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Excluir categoria' back_url=list_url back_label='Categorias' %}
+  {% include 'components/_delete_card.html' with kind='a categoria' name=object.name cancel_url=list_url %}
 {% endblock %}

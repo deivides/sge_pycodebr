@@ -1,0 +1,17 @@
+{# Edit/delete buttons under a detail card. Params (optional): update_url, delete_url #}
+{% if update_url or delete_url %}
+  <div class="flex flex-col-reverse gap-3 rounded-b-3xl border-t border-white/10 bg-slate-950/30 px-5 py-4 sm:flex-row sm:justify-end sm:px-8">
+    {% if delete_url %}
+      <a href="{{ delete_url }}"
+        class="inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-red-300 ring-1 ring-red-400/30 motion-safe:transition hover:bg-red-500/10 hover:text-red-200 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-none">
+        <i class="bi bi-trash" aria-hidden="true"></i> Excluir
+      </a>
+    {% endif %}
+    {% if update_url %}
+      <a href="{{ update_url }}"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 motion-safe:transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:outline-none">
+        <i class="bi bi-pencil" aria-hidden="true"></i> Editar
+      </a>
+    {% endif %}
+  </div>
+{% endif %}

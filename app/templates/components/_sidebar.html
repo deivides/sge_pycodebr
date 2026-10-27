@@ -1,80 +1,101 @@
-<div class="row flex-nowrap">
-  <div class="col-auto col-md-0 col-xl-0 px-0 bg-dark">
-    <div class="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 text-white">
-      <button class="btn btn-dark d-block d-sm-none mb-3" type="button" data-bs-toggle="collapse"
-        data-bs-target="#menuCollapse" aria-expanded="false" aria-controls="menuCollapse">
-        <i class="bi bi-list fs-4"></i>
-      </button>
-      <div class="collapse d-sm-block" id="menuCollapse">
-        <ul class="nav flex-column align-items-start" id="menu">
-          <li>
-            <a href="{% url 'home' %}" class="nav-link px-0 align-middle">
-              <i class="bi bi-speedometer2 fs-4"></i>
-              <span class="ms-1">Dashboard</span>
-            </a>
-          </li>
-          {% if perms.suppliers.view_supplier %}
-              <li>
-                <a href="{% url 'supplier_list' %}" class="nav-link px-0 align-middle">
-                  <i class="bi bi-truck fs-4"></i>
-                  <span class="ms-1">Fornecedores</span>
-                </a>
-              </li>
-            {% endif %}
-            {% if perms.brands.view_brand %}
-              <li>
-                <a href="{% url 'brand_list' %}" class="nav-link px-0 align-middle">
-                  <i class="bi bi-shop fs-4"></i>
-                  <span class="ms-1">Marcas</span>
-                </a>
-              </li>
-            {% endif %}
-            {% if perms.categories.view_category %}
-              <li>
-                <a href="{% url 'category_list' %}" class="nav-link px-0 align-middle">
-                  <i class="bi bi-tags fs-4"></i>
-                  <span class="ms-1">Categorias</span>
-                </a>
-              </li>
-            {% endif %}
-            {% if perms.products.view_product %}
-              <li>
-                <a href="{% url 'product_list' %}" class="nav-link px-0 align-middle">
-                  <i class="bi bi-box-seam fs-4"></i>
-                  <span class="ms-1">Produtos</span>
-                </a>
-              </li>
-            {% endif %}
+{% with url_name=request.resolver_match.url_name|default:'' %}
+{# Mobile backdrop #}
+<div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-slate-950/70 backdrop-blur-sm lg:hidden" aria-hidden="true"></div>
 
-          {% if perms.inflows.view_inflow %}
-            <li>
-              <a href="{% url 'inflow_list' %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-arrow-down-left-square fs-4"></i>
-                <span class="ms-1">Entradas</span>
-              </a>
-            </li>
+<aside id="sidebar" aria-label="Menu principal"
+  class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-white/10 bg-slate-900/80 backdrop-blur-xl motion-safe:transition-transform motion-safe:duration-300 lg:translate-x-0 lg:collapsed:-translate-x-full">
+
+  {# Brand #}
+  <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/10 px-5">
+    <a href="{% url 'home' %}" class="flex items-center gap-3 rounded-lg focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <span class="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 via-indigo-500 to-teal-400 shadow-lg shadow-indigo-900/50" aria-hidden="true">
+        <svg class="size-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 8l-9-5-9 5 9 5 9-5z" />
+          <path d="M3 8v8l9 5 9-5V8" />
+          <path d="M12 13v8" />
+        </svg>
+      </span>
+      <span class="leading-tight">
+        <span class="block bg-gradient-to-r from-violet-300 via-indigo-200 to-teal-300 bg-clip-text text-lg font-bold text-transparent">SGE</span>
+        <span class="block text-xs text-slate-400">Gestão de Estoque</span>
+      </span>
+    </a>
+    <button type="button" id="sidebar-close" aria-controls="sidebar" aria-label="Fechar menu" title="Fechar menu"
+      class="flex size-9 items-center justify-center rounded-lg text-slate-300 hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <i class="bi bi-x-lg lg:hidden" aria-hidden="true"></i>
+      <i class="bi bi-chevron-double-left hidden lg:inline" aria-hidden="true"></i>
+    </button>
+  </div>
+
+  {# Navigation #}
+  <nav class="flex-1 space-y-6 overflow-y-auto px-4 py-6">
+    <div>
+      <p class="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">Visão geral</p>
+      <ul class="mt-2 space-y-1">
+        {% url 'home' as home_url %}
+        {% include 'components/_nav_link.html' with href=home_url icon='speedometer2' label='Dashboard' match='home' %}
+      </ul>
+    </div>
+
+    {% if perms.products.view_product or perms.brands.view_brand or perms.categories.view_category or perms.suppliers.view_supplier %}
+      <div>
+        <p class="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">Cadastros</p>
+        <ul class="mt-2 space-y-1">
+          {% if perms.products.view_product %}
+            {% url 'product_list' as product_url %}
+            {% include 'components/_nav_link.html' with href=product_url icon='box-seam' label='Produtos' match='product_' %}
           {% endif %}
-          {% if perms.outflows.view_outflow %}
-            <li>
-              <a href="{% url 'outflow_list' %}" class="nav-link px-0 align-middle">
-                <i class="bi bi-arrow-up-right-square fs-4"></i>
-                <span class="ms-1">Saídas</span>
-              </a>
-            </li>
+          {% if perms.brands.view_brand %}
+            {% url 'brand_list' as brand_url %}
+            {% include 'components/_nav_link.html' with href=brand_url icon='award' label='Marcas' match='brand_' %}
           {% endif %}
-          <li class="nav-item">
-            {% if user.is_authenticated %}
-            <form action="{% url 'logout' %}" method="post" id="logout-form" class="nav-link px-0 align-middle">
-              {% csrf_token %}
-              <button type="submit" class="btn btn-link text-decoration-none text-reset nav-link px-0 align-middle">
-                <i class="bi bi-box-arrow-right fs-4 align-middle"></i>
-                <span class="ms-1 align-middle">Sair</span>
-              </button>
-            </form>
-            {% endif %}
-          </li>
+          {% if perms.categories.view_category %}
+            {% url 'category_list' as category_url %}
+            {% include 'components/_nav_link.html' with href=category_url icon='tags' label='Categorias' match='category_' %}
+          {% endif %}
+          {% if perms.suppliers.view_supplier %}
+            {% url 'supplier_list' as supplier_url %}
+            {% include 'components/_nav_link.html' with href=supplier_url icon='truck' label='Fornecedores' match='supplier_' %}
+          {% endif %}
         </ul>
       </div>
-      <hr>
+    {% endif %}
+
+    {% if perms.inflows.view_inflow or perms.outflows.view_outflow %}
+      <div>
+        <p class="px-3 text-xs font-semibold tracking-wider text-slate-500 uppercase">Movimentações</p>
+        <ul class="mt-2 space-y-1">
+          {% if perms.inflows.view_inflow %}
+            {% url 'inflow_list' as inflow_url %}
+            {% include 'components/_nav_link.html' with href=inflow_url icon='box-arrow-in-down' label='Entradas' match='inflow_' %}
+          {% endif %}
+          {% if perms.outflows.view_outflow %}
+            {% url 'outflow_list' as outflow_url %}
+            {% include 'components/_nav_link.html' with href=outflow_url icon='box-arrow-up' label='Saídas' match='outflow_' %}
+          {% endif %}
+        </ul>
+      </div>
+    {% endif %}
+  </nav>
+
+  {# User + logout #}
+  <div class="shrink-0 border-t border-white/10 p-4">
+    <div class="flex items-center gap-3 rounded-xl bg-white/5 p-3 ring-1 ring-white/10">
+      <span class="flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500 to-teal-400 text-sm font-semibold text-white uppercase" aria-hidden="true">
+        {{ user.get_username|slice:":1" }}
+      </span>
+      <div class="min-w-0 flex-1">
+        <p class="truncate text-sm font-medium text-white">{{ user.get_full_name|default:user.get_username }}</p>
+        <p class="truncate text-xs text-slate-400">{% if user.is_superuser %}Administrador{% else %}Usuário{% endif %}</p>
+      </div>
+      <form action="{% url 'logout' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" aria-label="Sair" title="Sair"
+          class="flex size-9 items-center justify-center rounded-lg text-slate-300 motion-safe:transition hover:bg-red-500/10 hover:text-red-300 focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:outline-none">
+          <i class="bi bi-box-arrow-right text-lg" aria-hidden="true"></i>
+        </button>
+      </form>
     </div>
   </div>
+</aside>
+{% endwith %}

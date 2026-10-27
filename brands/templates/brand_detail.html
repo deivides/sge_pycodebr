@@ -1,17 +1,36 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ object.name }}{% endblock %}
+
 {% block content %}
+  {% url 'brand_list' as list_url %}
+  {% include 'components/_page_header.html' with title=object.name subtitle='Detalhes da marca' back_url=list_url back_label='Marcas' %}
 
-<div class="container mt-4">
-  <h3 class="display-6">Detalhes da Marca</h3>
-
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">{{ object.name }}</h3>
-            <p class="card-text">{{ object.description }}</p>
-        </div>
-    </div>
-    <a href="{% url 'brand_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Marcas</a>
-</div>
-
+  <div class="rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+    <dl class="grid gap-6 p-5 sm:grid-cols-2 sm:p-8">
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Nome</dt>
+        <dd class="mt-1 text-white">{{ object.name }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">ID</dt>
+        <dd class="mt-1 text-white tabular-nums">#{{ object.id }}</dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Descrição</dt>
+        <dd class="mt-1 whitespace-pre-line text-slate-200">{{ object.description|default:"Sem descrição." }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Cadastrada em</dt>
+        <dd class="mt-1 text-slate-200">{{ object.created_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Atualizada em</dt>
+        <dd class="mt-1 text-slate-200">{{ object.updated_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+    </dl>
+    {% if perms.brands.change_brand %}{% url 'brand_update' object.id as update_url %}{% endif %}
+    {% if perms.brands.delete_brand %}{% url 'brand_delete' object.id as delete_url %}{% endif %}
+    {% include 'components/_detail_footer.html' %}
+  </div>
 {% endblock %}

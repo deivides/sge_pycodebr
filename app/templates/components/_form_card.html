@@ -1,0 +1,33 @@
+{# Create/edit form. Params: form, submit_label, cancel_url #}
+<form method="post" class="rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+  {% csrf_token %}
+
+  <div class="p-5 sm:p-8">
+    {% if form.non_field_errors %}
+      <div role="alert" class="mb-6 flex items-start gap-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+        <i class="bi bi-exclamation-circle mt-0.5" aria-hidden="true"></i>
+        <div class="space-y-1">{% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}</div>
+      </div>
+    {% endif %}
+
+    {% for hidden in form.hidden_fields %}{{ hidden }}{% endfor %}
+
+    <div class="grid gap-5 md:grid-cols-2">
+      {% for field in form.visible_fields %}
+        {% include 'components/_form_field.html' with field=field %}
+      {% endfor %}
+    </div>
+    <p class="mt-6 text-xs text-slate-400"><span class="text-teal-300">*</span> Campos obrigatórios</p>
+  </div>
+
+  <div class="flex flex-col-reverse gap-3 rounded-b-3xl border-t border-white/10 bg-slate-950/30 px-5 py-4 sm:flex-row sm:justify-end sm:px-8">
+    <a href="{{ cancel_url }}"
+      class="inline-flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-slate-200 ring-1 ring-white/15 motion-safe:transition hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      Cancelar
+    </a>
+    <button type="submit"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 motion-safe:transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:outline-none">
+      <i class="bi bi-check-lg" aria-hidden="true"></i> {{ submit_label }}
+    </button>
+  </div>
+</form>

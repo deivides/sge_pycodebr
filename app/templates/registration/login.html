@@ -1,48 +1,176 @@
-{% extends 'base.html' %}
-{% block title %}Login{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-br" class="h-full">
 
-{% block content %}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="dark">
+  <title>Entrar | SGE - Sistema de Gestão de Estoque</title>
+  {# Standalone page: Tailwind Play CDN (pinned) so Bootstrap on other pages is untouched. #}
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4.1.11"></script>
+</head>
 
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-body">
-          <h5 class="card-title text-center mb-4">Login</h5>
-          <form method="post">
-            {% csrf_token %}
-            <div class="mb-3">
-              <label for="username" class="form-label">Usuário</label>
-              <input type="text" class="form-control" id="username" name="username" required>
-            </div>
-            <div class="mb-3">
-              <label for="password" class="form-label">Senha</label>
-              <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="d-grid gap-2">
-              <button type="submit" class="btn btn-primary">Entrar</button>
-            </div>
-          </form>
-          {% if form.errors %}
-            <div class="alert alert-danger mt-4">
-              <ul class="mb-0">
-                {% for field in form %}
-                  {% for error in field.errors %}
-                    <li>{{ error }}</li>
-                  {% endfor %}
-                {% endfor %}
-                {% for error in form.non_field_errors %}
-                  <li>{{ error }}</li>
-                {% endfor %}
-              </ul>
-            </div>
-          {% endif %}
+<body class="min-h-full bg-slate-950 text-slate-200 antialiased">
+  <div class="relative isolate min-h-screen overflow-hidden bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950">
+
+    {# Decorative glows #}
+    <div aria-hidden="true" class="pointer-events-none absolute -top-40 -left-32 -z-10 size-[28rem] rounded-full bg-violet-600/25 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute -right-32 -bottom-40 -z-10 size-[30rem] rounded-full bg-teal-500/20 blur-3xl"></div>
+    <div aria-hidden="true" class="pointer-events-none absolute top-1/3 left-1/2 -z-10 size-72 -translate-x-1/2 rounded-full bg-indigo-500/10 blur-3xl"></div>
+
+    <div class="mx-auto grid min-h-screen max-w-6xl content-center items-center gap-6 px-4 py-6 sm:gap-10 sm:px-6 sm:py-10 lg:grid-cols-2 lg:gap-16 lg:px-8">
+
+      {# Brand panel #}
+      <section class="text-center lg:text-left" aria-labelledby="brand-title">
+        <div class="mx-auto flex size-10 items-center sm:size-14 justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-500 to-teal-400 shadow-lg shadow-indigo-900/50 lg:mx-0">
+          <svg class="size-6 text-white sm:size-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 8l-9-5-9 5 9 5 9-5z" />
+            <path d="M3 8v8l9 5 9-5V8" />
+            <path d="M12 13v8" />
+          </svg>
         </div>
-      </div>
+        <h1 id="brand-title" class="mt-3 text-3xl font-bold tracking-tight text-white sm:mt-6 sm:text-5xl">
+          <span class="bg-gradient-to-r from-violet-300 via-indigo-200 to-teal-300 bg-clip-text text-transparent">SGE</span>
+        </h1>
+        <p class="mt-1 text-base font-medium sm:mt-2 sm:text-lg text-slate-200">Sistema de Gestão de Estoque</p>
+        <p class="mx-auto mt-4 hidden max-w-md text-base text-slate-300 sm:block lg:mx-0">
+          Controle produtos, categorias, fornecedores e movimentações em um só lugar, com clareza e segurança.
+        </p>
+        <ul class="mx-auto mt-8 hidden max-w-md space-y-3 text-left text-sm text-slate-300 sm:block lg:mx-0">
+          <li class="flex items-center gap-3">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10 text-teal-300" aria-hidden="true">
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+            </span>
+            Controle de estoque em tempo real
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10 text-teal-300" aria-hidden="true">
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+            </span>
+            Entradas e saídas registradas
+          </li>
+          <li class="flex items-center gap-3">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-white/5 ring-1 ring-white/10 text-teal-300" aria-hidden="true">
+              <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5" /></svg>
+            </span>
+            Acesso restrito a usuários autorizados
+          </li>
+        </ul>
+      </section>
+
+      {# Login card #}
+      <main class="w-full">
+        <div class="mx-auto w-full max-w-md rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/40 backdrop-blur-xl sm:p-8">
+          <h2 class="text-2xl font-semibold text-white">Entrar</h2>
+          <p class="mt-1 text-sm text-slate-300">Acesse sua conta para continuar.</p>
+
+          {# Non-field errors #}
+          <div role="alert">
+            {% if form.non_field_errors %}
+              <div class="mt-5 flex items-start gap-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <svg class="mt-0.5 size-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></svg>
+                {% if form.non_field_errors|length == 1 %}
+                  {% for error in form.non_field_errors %}<p>{{ error }}</p>{% endfor %}
+                {% else %}
+                  <ul class="list-inside list-disc space-y-1">
+                    {% for error in form.non_field_errors %}<li>{{ error }}</li>{% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
+            {% endif %}
+          </div>
+
+          <form method="post" class="mt-6 space-y-5" id="login-form" novalidate>
+            {% csrf_token %}
+            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+            <div>
+              <label for="id_username" class="block text-sm font-medium text-slate-200">Usuário</label>
+              <div class="relative mt-2">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400" aria-hidden="true">
+                  <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
+                </span>
+                <input type="text" id="id_username" name="username" value="{{ form.username.value|default_if_none:'' }}"
+                  autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" maxlength="150" {% if not form.errors %}autofocus{% endif %} required
+                  {% if form.username.errors %}aria-invalid="true" aria-describedby="username-errors"{% endif %}
+                  class="block w-full rounded-xl border border-white/10 bg-slate-900/60 py-3 pr-4 pl-11 text-base text-white placeholder:text-slate-400 motion-safe:transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/60 focus:outline-none aria-[invalid=true]:border-red-400 aria-[invalid=true]:focus:border-red-400 aria-[invalid=true]:focus:ring-red-400/60"
+                  placeholder="Seu usuário">
+              </div>
+              <div id="username-errors">
+                {% for error in form.username.errors %}
+                  <p class="mt-2 text-sm text-red-300">{{ error }}</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div>
+              <label for="id_password" class="block text-sm font-medium text-slate-200">Senha</label>
+              <div class="relative mt-2">
+                <span class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400" aria-hidden="true">
+                  <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
+                </span>
+                <input type="password" id="id_password" name="password" autocomplete="current-password" {% if form.errors %}autofocus{% endif %} required
+                  {% if form.password.errors %}aria-invalid="true" aria-describedby="password-errors"{% endif %}
+                  class="block w-full rounded-xl border border-white/10 bg-slate-900/60 py-3 pr-12 pl-11 text-base text-white placeholder:text-slate-400 motion-safe:transition focus:border-indigo-400 focus:ring-2 focus:ring-indigo-400/60 focus:outline-none aria-[invalid=true]:border-red-400 aria-[invalid=true]:focus:border-red-400 aria-[invalid=true]:focus:ring-red-400/60"
+                  placeholder="Sua senha">
+                <button type="button" id="toggle-password" aria-controls="id_password" aria-pressed="false" aria-label="Mostrar senha"
+                  class="absolute inset-y-1 right-1 flex items-center rounded-lg px-2.5 text-slate-300 motion-safe:transition hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+                  <svg id="icon-eye" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" /><circle cx="12" cy="12" r="3" /></svg>
+                  <svg id="icon-eye-off" class="hidden size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" /><path d="M1 1l22 22" /></svg>
+                </button>
+              </div>
+              <div id="password-errors">
+                {% for error in form.password.errors %}
+                  <p class="mt-2 text-sm text-red-300">{{ error }}</p>
+                {% endfor %}
+              </div>
+            </div>
+
+            <button type="submit" id="submit-btn"
+              class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-600 px-4 py-3 text-base font-semibold text-white shadow-lg shadow-indigo-900/40 motion-safe:transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-70">
+              <svg id="spinner" class="hidden size-5 motion-safe:animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25" /><path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>
+              <span id="submit-label">Entrar</span>
+            </button>
+          </form>
+        </div>
+        <p class="mt-6 text-center text-xs text-slate-400">&copy; SGE &middot; Sistema de Gestão de Estoque</p>
+      </main>
     </div>
   </div>
-</div>
-{% endblock %}
 
+  <script>
+    (function () {
+      var pwd = document.getElementById('id_password');
+      var toggle = document.getElementById('toggle-password');
+      toggle.addEventListener('click', function () {
+        var show = pwd.type === 'password';
+        pwd.type = show ? 'text' : 'password';
+        toggle.setAttribute('aria-pressed', show ? 'true' : 'false');
+        document.getElementById('icon-eye').classList.toggle('hidden', show);
+        document.getElementById('icon-eye-off').classList.toggle('hidden', !show);
+      });
 
+      var form = document.getElementById('login-form');
+      form.addEventListener('submit', function () {
+        if (!form.checkValidity()) return;
+        var btn = document.getElementById('submit-btn');
+        // Delay disabling so the submit still goes through with the form data.
+        setTimeout(function () {
+          btn.disabled = true;
+          document.getElementById('spinner').classList.remove('hidden');
+          document.getElementById('submit-label').textContent = 'Entrando...';
+        }, 0);
+      });
+      // Restore state when returning via bfcache.
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) {
+          document.getElementById('submit-btn').disabled = false;
+          document.getElementById('spinner').classList.add('hidden');
+          document.getElementById('submit-label').textContent = 'Entrar';
+        }
+      });
+    })();
+  </script>
+</body>
 
+</html>

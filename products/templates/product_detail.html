@@ -1,23 +1,54 @@
 {% extends 'base.html' %}
 
+{% block title %}{{ object.title }}{% endblock %}
+
 {% block content %}
+  {% url 'product_list' as list_url %}
+  {% include 'components/_page_header.html' with title=object.title subtitle='Detalhes do produto' back_url=list_url back_label='Produtos' %}
 
-<div class="container mt-4">
-  <h3 class="display-6">Detalhes do Produto</h3>
+  <div class="mb-6 grid gap-4 sm:grid-cols-3">
+    {% include 'components/_stat_card.html' with label='Preço de custo' value=object.cost_price|floatformat:"2g" prefix='R$' icon='wallet2' accent='rose' %}
+    {% include 'components/_stat_card.html' with label='Preço de venda' value=object.selling_price|floatformat:"2g" prefix='R$' icon='tag' accent='teal' %}
+    {% if object.quantity > 0 %}
+      {% include 'components/_stat_card.html' with label='Em estoque' value=object.quantity icon='box-seam' accent='violet' %}
+    {% else %}
+      {% include 'components/_stat_card.html' with label='Sem estoque' value=object.quantity icon='exclamation-triangle' accent='rose' %}
+    {% endif %}
+  </div>
 
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">{{ object.title }}</h3>
-            <p class="card-text">Categoria: {{ object.category }}</p>
-            <p class="card-text">Marca: {{ object.brand }}</p>
-            <p class="card-text">{{ object.description }}</p>
-            <p class="card-text">Número de Série: <strong>{{ object.serie_number }}</strong></p>
-            <p class="card-text">Preço de Custo: <strong>{{ object.cost_price }}</strong></p>
-            <p class="card-text">Preço de Venda: <strong>{{ object.selling_price }}</strong></p>
-            <p class="card-text">Quantidade em Estoque: <strong>{{ object.quantity }}</strong></p>
-        </div>
-    </div>
-    <a href="{% url 'product_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Produtos</a>
-</div>
-
+  <div class="rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+    <dl class="grid gap-6 p-5 sm:grid-cols-2 sm:p-8">
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Categoria</dt>
+        <dd class="mt-2"><span class="inline-flex items-center gap-1.5 rounded-full bg-violet-500/10 px-3 py-1 text-sm text-violet-200 ring-1 ring-violet-400/20"><i class="bi bi-tags" aria-hidden="true"></i>{{ object.category }}</span></dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Marca</dt>
+        <dd class="mt-2"><span class="inline-flex items-center gap-1.5 rounded-full bg-teal-500/10 px-3 py-1 text-sm text-teal-200 ring-1 ring-teal-400/20"><i class="bi bi-award" aria-hidden="true"></i>{{ object.brand }}</span></dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Número de série</dt>
+        <dd class="mt-1 font-mono text-slate-200">{{ object.serie_number|default:"—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">ID</dt>
+        <dd class="mt-1 text-slate-200 tabular-nums">#{{ object.id }}</dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Descrição</dt>
+        <dd class="mt-1 whitespace-pre-line text-slate-200">{{ object.description|default:"Sem descrição." }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Cadastrado em</dt>
+        <dd class="mt-1 text-slate-200">{{ object.created_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Atualizado em</dt>
+        <dd class="mt-1 text-slate-200">{{ object.updated_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+    </dl>
+    {% if perms.products.change_product %}{% url 'product_update' object.id as update_url %}{% endif %}
+    {% if perms.products.delete_product %}{% url 'product_delete' object.id as delete_url %}{% endif %}
+    {% include 'components/_detail_footer.html' %}
+  </div>
 {% endblock %}
