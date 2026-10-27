@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Excluir marca{% endblock %}
+
 {% block content %}
-
-  <div calss="container mt-4">
-    <h3 class="display-6">Deletar Marca</h3>
-
-    <div class="card">
-      <div class="card-body">
-        <P class="card-text">Tem certeza de que deseja excluir a marca <strong>{{ object.name }}</strong>?</P>
-        <form method="post">
-          {% csrf_token %}
-          <button type="submit" class="btn btn-danger">Deletar</button>
-        </form>
-        <a href="{% url 'brand_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Marcas</a>
-      </div>
-    </div>
-  </div>
-
+  {% url 'brand_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Excluir marca' back_url=list_url back_label='Marcas' %}
+  {% include 'components/_delete_card.html' with kind='a marca' name=object.name cancel_url=list_url %}
 {% endblock %}

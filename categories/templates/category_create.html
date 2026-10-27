@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Cadastrar categoria{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-  <h3 class="display-6">Cadastrar Categoria</h3>
-
-  <div class="card">
-    <div class="card-body">
-      <form method="post" class="form">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-primary">Salvar Categoria</button>
-      </form>
-    </div>
-  </div>
-  <a href="{% url 'category_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Categorias</a>  
-</div>
-
+  {% url 'category_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Cadastrar categoria' subtitle='Preencha os dados da nova categoria.' back_url=list_url back_label='Categorias' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Salvar categoria' cancel_url=list_url %}
 {% endblock %}

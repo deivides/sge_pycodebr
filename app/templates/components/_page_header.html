@@ -1,0 +1,18 @@
+{# Page title. Params: title, subtitle, back_url + back_label (optional), action_url + action_label + action_icon (optional) #}
+<div class="mb-6 flex flex-col gap-4 sm:mb-8 sm:flex-row sm:items-end sm:justify-between">
+  <div class="min-w-0">
+    {% if back_url %}
+      <a href="{{ back_url }}" class="mb-2 inline-flex items-center gap-1.5 rounded-md text-sm text-slate-400 motion-safe:transition hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+        <i class="bi bi-arrow-left" aria-hidden="true"></i> {{ back_label }}
+      </a>
+    {% endif %}
+    <h1 class="text-2xl font-bold tracking-tight break-words text-white sm:text-3xl">{{ title }}</h1>
+    {% if subtitle %}<p class="mt-1 text-sm text-slate-400">{{ subtitle }}</p>{% endif %}
+  </div>
+  {% if action_url %}
+    <a href="{{ action_url }}"
+      class="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-teal-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-900/40 motion-safe:transition hover:brightness-110 focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:outline-none">
+      <i class="bi bi-{{ action_icon|default:'plus-lg' }}" aria-hidden="true"></i> {{ action_label }}
+    </a>
+  {% endif %}
+</div>

@@ -1,0 +1,21 @@
+{# Icon buttons for a table row. Params (all optional): detail_url, update_url, delete_url, name #}
+<div class="flex items-center justify-end gap-1">
+  {% if detail_url %}
+    <a href="{{ detail_url }}" title="Ver detalhes" aria-label="Ver detalhes de {{ name }}"
+      class="flex size-9 items-center justify-center rounded-lg text-slate-400 motion-safe:transition hover:bg-sky-500/10 hover:text-sky-300 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <i class="bi bi-eye" aria-hidden="true"></i>
+    </a>
+  {% endif %}
+  {% if update_url %}
+    <a href="{{ update_url }}" title="Editar" aria-label="Editar {{ name }}"
+      class="flex size-9 items-center justify-center rounded-lg text-slate-400 motion-safe:transition hover:bg-amber-500/10 hover:text-amber-300 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <i class="bi bi-pencil" aria-hidden="true"></i>
+    </a>
+  {% endif %}
+  {% if delete_url %}
+    <a href="{{ delete_url }}" title="Excluir" aria-label="Excluir {{ name }}"
+      class="flex size-9 items-center justify-center rounded-lg text-slate-400 motion-safe:transition hover:bg-red-500/10 hover:text-red-300 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <i class="bi bi-trash" aria-hidden="true"></i>
+    </a>
+  {% endif %}
+</div>

@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Editar fornecedor{% endblock %}
+
 {% block content %}
-
-  <div class="container mt-4">
-    <h3 class="display-6">Editar Fornecedor</h3>
-
-    <div class="card">
-      <div class="card-body">
-        <form method="post" class="form">
-          {% csrf_token %}
-          {{ form.as_p }}
-          <button type="submit" class="btn btn-primary">Salvar Fornecedor</button>
-        </form>
-      </div>
-    </div>
-    <a href="{% url 'supplier_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Fornecedores</a>
-  </div>
-
+  {% url 'supplier_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Editar fornecedor' subtitle='Atualize os dados do fornecedor.' back_url=list_url back_label='Fornecedores' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Salvar alterações' cancel_url=list_url %}
 {% endblock %}

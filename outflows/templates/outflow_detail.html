@@ -1,18 +1,44 @@
 {% extends 'base.html' %}
 
+{% block title %}Saída #{{ object.id }}{% endblock %}
+
 {% block content %}
+  {% url 'outflow_list' as list_url %}
+  {% include 'components/_page_header.html' with title=object.product subtitle='Detalhes da saída' back_url=list_url back_label='Saídas' %}
 
-<div class="container mt-4">
-  <h3 class="display-6">Detalhes da Saída</h3>
-
-    <div class="card">
-        <div class="card-body">
-            <h3 class="card-title">{{ object.name }}</h3>
-            <p class="card-text">Quantidade: <strong>{{ object.quantity }}</strong></p>
-            <p class="card-text">{{ object.description }}</p>
-        </div>
+  <div class="rounded-3xl border border-white/10 bg-white/5 shadow-2xl shadow-black/30 backdrop-blur-xl">
+    <div class="flex items-center gap-4 border-b border-white/10 p-5 sm:px-8">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-rose-500/15 text-rose-300 ring-1 ring-rose-400/20" aria-hidden="true">
+        <i class="bi bi-box-arrow-up text-xl"></i>
+      </span>
+      <div>
+        <p class="text-sm text-slate-400">Quantidade retirada</p>
+        <p class="text-2xl font-bold text-white tabular-nums">&minus;{{ object.quantity }}</p>
+      </div>
     </div>
-    <a href="{% url 'outflow_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Saídas</a>
-</div>
-
+    <dl class="grid gap-6 p-5 sm:grid-cols-2 sm:p-8">
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Produto</dt>
+        <dd class="mt-1">
+          {% if perms.products.view_product %}
+            <a href="{% url 'product_detail' object.product_id %}" class="text-indigo-300 underline-offset-4 hover:text-indigo-200 hover:underline">{{ object.product }}</a>
+          {% else %}
+            <span class="text-white">{{ object.product }}</span>
+          {% endif %}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Data de saída</dt>
+        <dd class="mt-1 text-slate-200">{{ object.created_at|date:"d/m/Y H:i" }}</dd>
+      </div>
+      <div>
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">ID</dt>
+        <dd class="mt-1 text-slate-200 tabular-nums">#{{ object.id }}</dd>
+      </div>
+      <div class="sm:col-span-2">
+        <dt class="text-xs font-semibold tracking-wider text-slate-400 uppercase">Descrição</dt>
+        <dd class="mt-1 whitespace-pre-line text-slate-200">{{ object.description|default:"Sem descrição." }}</dd>
+      </div>
+    </dl>
+  </div>
 {% endblock %}

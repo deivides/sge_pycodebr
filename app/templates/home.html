@@ -1,150 +1,192 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    SGE - home
-{% endblock %}
+{% block title %}Dashboard{% endblock %}
 
 {% block content %}
-  
-  {% if perms.products.view_product and perms.inflows.view_inflow %}
-    {% include 'components/_product_metrics.html' %}
-  {% endif %}
+  {% include 'components/_page_header.html' with title='Dashboard' subtitle='Visão geral do estoque e das vendas.' %}
 
-  {% if perms.outflows.view_outflow %}    
-    {% include 'components/_sales_metrics.html' %}
-  {% endif %}
+  <div class="space-y-8">
+    {% if perms.products.view_product and perms.inflows.view_inflow %}
+      {% include 'components/_product_metrics.html' %}
+    {% endif %}
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {% if perms.outflows.view_outflow %}
+      {% include 'components/_sales_metrics.html' %}
 
-  {% if perms.outflows.view_outflow %}
-    <div class="row mt-4 justify-content-center">
-
-      <div class="col-md-6 text-center">
-        <h5 class="text-center mb-3">Valor de vendas (Últimos 7 Dias)</h5>
-        <canvas id="dailySalesChart"></canvas>
-      </div>
-
-      <div class="col-md-6 text-center">
-        <h5 class="text-center mb-3">Quantidade de Vendas Diárias</h5>
-        <canvas id="dailySalesQuantityChart"></canvas>
-      </div>
-
-      <script>
-        document.addEventListener("DOMContentLoaded", function() {})
-          var dailySalesData = JSON.parse('{{ daily_sales_data|safe }}');
-          var dailySalesQuantityData = JSON.parse('{{ daily_sales_quantity_data|safe }}');
-
-          var ctxDailySales = document.getElementById('dailySalesChart').getContext('2d');
-          var dailySalesChart = new Chart(ctxDailySales, {
-              type: 'line',
-              data: {
-                labels: dailySalesData.dates,
-                datasets: [{
-                  label: 'Valor em vendas',
-                  data: dailySalesData.values,
-                  fill: false,
-                  borderColor: 'rgba(54, 162, 235, 1)',
-                  borderWidth: 2,
-                  tension: 0.5
-                }]
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
-                }
-              }
-            });
-
-            var ctxDailySalesQuantity = document.getElementById('dailySalesQuantityChart').getContext('2d');
-            var dailySalesQuantityChart = new Chart(ctxDailySalesQuantity, {
-              type: 'bar',
-              data: {
-                labels: dailySalesQuantityData.dates,
-                datasets: [{
-                  label: 'Quantidade de Vendas',
-                  data: dailySalesQuantityData.values,
-                  backgroundColor: 'rgba(255, 99, 132, 0.6)',
-                  borderColor: 'rgba(255, 99, 132, 1)',
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                scales: {
-                  y: {
-                    beginAtZero: true
-                  }
-                }
-              }
-            });
-            </script>
+      <div class="grid gap-6 lg:grid-cols-2">
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl" aria-labelledby="daily-sales-title">
+          <h2 id="daily-sales-title" class="font-semibold text-white">Valor de vendas</h2>
+          <p class="text-sm text-slate-400">Últimos 7 dias</p>
+          <div class="relative mt-4 h-72">
+            <canvas id="dailySalesChart" role="img" aria-label="Gráfico de linha do valor de vendas nos últimos 7 dias"></canvas>
           </div>
-        {% endif %}
+        </section>
 
-        {% if perms.products.view_product %}
-          <div class="row mt-4 justify-content-center">
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl" aria-labelledby="daily-quantity-title">
+          <h2 id="daily-quantity-title" class="font-semibold text-white">Quantidade de vendas</h2>
+          <p class="text-sm text-slate-400">Vendas por dia, últimos 7 dias</p>
+          <div class="relative mt-4 h-72">
+            <canvas id="dailySalesQuantityChart" role="img" aria-label="Gráfico de barras da quantidade de vendas diárias"></canvas>
+          </div>
+        </section>
+      </div>
+    {% endif %}
 
-            <div class="col-md-6 text-center">
-              <h5 class="mb-3">Produtos por Categoria</h5>
-              <div class="mb-4"></div>
-              <div class="embed-responsive embed-responsive-1by1" style="width: 400xp; display: inline-block;">
-                <canvas id="productByCategoryChart" class="embed-responsiv-item"></canvas>
-              </div>
-            </div>
-        
-            <div class="col-md-6 text-center">
-              <h5 class="mb-3">Produtos por Marca</h5>
-              <div class="mb-4"></div>
-              <div style="width: 400xp; display: inline-block;">
-                <canvas id="productByBrandChart" class="embed-responsiv-item"></canvas>
-              </div>
-            </div>
-            <script>
-              document.addEventListener("DOMContentLoaded", function() {  
-            var productCountByCategory = JSON.parse('{{ product_count_by_category|safe }}');
-            var productCountByBrand = JSON.parse('{{ product_count_by_brand|safe }}');
-      
-            var ctxCategory = document.getElementById('productByCategoryChart').getContext('2d');
-            var productByCategoryChart = new Chart(ctxCategory, {
-              type: 'doughnut',
-              data: {
-                labels: Object.keys(productCountByCategory),
-                datasets: [{
-                  data: Object.values(productCountByCategory),
-                  borderWidth: 1
-                }]
+    {% if perms.products.view_product %}
+      <div class="grid gap-6 lg:grid-cols-2">
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl" aria-labelledby="by-category-title">
+          <h2 id="by-category-title" class="font-semibold text-white">Produtos por categoria</h2>
+          <p class="text-sm text-slate-400">Quantidade de produtos cadastrados</p>
+          <div class="relative mt-4 h-72" data-chart-wrapper>
+            <canvas id="productByCategoryChart" role="img" aria-label="Gráfico de rosca de produtos por categoria"></canvas>
+          </div>
+        </section>
+
+        <section class="rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-xl" aria-labelledby="by-brand-title">
+          <h2 id="by-brand-title" class="font-semibold text-white">Produtos por marca</h2>
+          <p class="text-sm text-slate-400">Quantidade de produtos cadastrados</p>
+          <div class="relative mt-4 h-72" data-chart-wrapper>
+            <canvas id="productByBrandChart" role="img" aria-label="Gráfico de rosca de produtos por marca"></canvas>
+          </div>
+        </section>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+  {% if perms.outflows.view_outflow or perms.products.view_product %}
+    {% if perms.outflows.view_outflow %}
+      {{ daily_sales_data|json_script:"daily-sales-data" }}
+      {{ daily_sales_quantity_data|json_script:"daily-sales-quantity-data" }}
+    {% endif %}
+    {% if perms.products.view_product %}
+      {{ product_count_by_category|json_script:"product-count-by-category" }}
+      {{ product_count_by_brand|json_script:"product-count-by-brand" }}
+    {% endif %}
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+      (function () {
+        var palette = ['#8b5cf6', '#14b8a6', '#6366f1', '#f59e0b', '#38bdf8', '#f43f5e', '#10b981', '#d946ef'];
+
+        Chart.defaults.color = '#94a3b8';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.06)';
+        Chart.defaults.font.family = 'ui-sans-serif, system-ui, sans-serif';
+        Chart.defaults.maintainAspectRatio = false;
+        Chart.defaults.plugins.tooltip.backgroundColor = 'rgba(15, 23, 42, 0.95)';
+        Chart.defaults.plugins.tooltip.borderColor = 'rgba(255, 255, 255, 0.1)';
+        Chart.defaults.plugins.tooltip.borderWidth = 1;
+        Chart.defaults.plugins.tooltip.padding = 10;
+
+        function readData(id) {
+          var el = document.getElementById(id);
+          return el ? JSON.parse(el.textContent) : null;
+        }
+
+        // "2026-10-27" -> "27/10"
+        function shortDate(iso) {
+          var parts = iso.split('-');
+          return parts[2] + '/' + parts[1];
+        }
+
+        var brl = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' });
+
+        var dailySales = readData('daily-sales-data');
+        if (dailySales) {
+          var ctx = document.getElementById('dailySalesChart').getContext('2d');
+          var gradient = ctx.createLinearGradient(0, 0, 0, 280);
+          gradient.addColorStop(0, 'rgba(139, 92, 246, 0.35)');
+          gradient.addColorStop(1, 'rgba(139, 92, 246, 0)');
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: dailySales.dates.map(shortDate),
+              datasets: [{
+                label: 'Valor em vendas',
+                data: dailySales.values,
+                fill: true,
+                backgroundColor: gradient,
+                borderColor: '#8b5cf6',
+                borderWidth: 2,
+                pointBackgroundColor: '#8b5cf6',
+                pointRadius: 3,
+                tension: 0.4
+              }]
+            },
+            options: {
+              plugins: {
+                legend: { display: false },
+                tooltip: { callbacks: { label: function (c) { return brl.format(c.parsed.y); } } }
               },
-              options: {
-                plugins: {
-                  legend: {
-                    display: false
-                  },
-                }
+              scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, ticks: { callback: function (v) { return brl.format(v); } } }
               }
-            });
-      
-            var ctxBrand = document.getElementById('productByBrandChart').getContext('2d');
-            var productByBrandChart = new Chart(ctxBrand, {
-              type: 'doughnut',
-              data: {
-                labels: Object.keys(productCountByBrand),
-                datasets: [{
-                  data: Object.values(productCountByBrand),
-                  borderWidth: 1
-                }]
-              },
-              options: {
-                plugins: {
-                  legend: {
-                    display: false
-                  },
-                }
-              }
-            });
+            }
           });
-          </script>
-        </div>
-      {% endif %}
+        }
 
+        var dailyQuantity = readData('daily-sales-quantity-data');
+        if (dailyQuantity) {
+          new Chart(document.getElementById('dailySalesQuantityChart'), {
+            type: 'bar',
+            data: {
+              labels: dailyQuantity.dates.map(shortDate),
+              datasets: [{
+                label: 'Vendas',
+                data: dailyQuantity.values,
+                backgroundColor: 'rgba(20, 184, 166, 0.7)',
+                hoverBackgroundColor: '#14b8a6',
+                borderRadius: 6,
+                maxBarThickness: 36
+              }]
+            },
+            options: {
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, ticks: { precision: 0 } }
+              }
+            }
+          });
+        }
+
+        function doughnut(canvasId, counts) {
+          var canvas = document.getElementById(canvasId);
+          var values = Object.values(counts);
+          var total = values.reduce(function (a, b) { return a + b; }, 0);
+          if (!total) {
+            canvas.closest('[data-chart-wrapper]').innerHTML =
+              '<div class="flex h-full items-center justify-center text-sm text-slate-400">Nenhum produto cadastrado.</div>';
+            return;
+          }
+          new Chart(canvas, {
+            type: 'doughnut',
+            data: {
+              labels: Object.keys(counts),
+              datasets: [{
+                data: values,
+                backgroundColor: palette,
+                borderColor: '#0f172a',
+                borderWidth: 2,
+                hoverOffset: 6
+              }]
+            },
+            options: {
+              cutout: '65%',
+              plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 10, boxHeight: 10, usePointStyle: true, padding: 14 } }
+              }
+            }
+          });
+        }
+
+        var byCategory = readData('product-count-by-category');
+        if (byCategory) doughnut('productByCategoryChart', byCategory);
+        var byBrand = readData('product-count-by-brand');
+        if (byBrand) doughnut('productByBrandChart', byBrand);
+      })();
+    </script>
+  {% endif %}
 {% endblock %}

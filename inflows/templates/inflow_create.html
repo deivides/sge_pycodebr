@@ -1,20 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}Registrar entrada{% endblock %}
+
 {% block content %}
-
-<div class="container mt-4">
-  <h3 class="display-6">Cadastrar Entrada</h3>
-
-  <div class="card">
-    <div class="card-body">
-      <form method="post" class="form">
-        {% csrf_token %}
-        {{ form.as_p}}
-        <button type="submit" class="btn btn-primary">Registrar Entrada</button>
-      </form>
-    </div>
-  </div>
-  <a href="{% url 'inflow_list' %}" class="btn btn-secondary mt-3">Cancelar e Voltar para a Lista de Entradas</a>  
-</div>
-
+  {% url 'inflow_list' as list_url %}
+  {% include 'components/_page_header.html' with title='Registrar entrada' subtitle='A quantidade informada será somada ao estoque do produto.' back_url=list_url back_label='Entradas' %}
+  {% include 'components/_form_card.html' with form=form submit_label='Registrar entrada' cancel_url=list_url %}
 {% endblock %}

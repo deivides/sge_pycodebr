@@ -1,0 +1,25 @@
+{# Delete confirmation. Params: kind (e.g. "o produto"), name, cancel_url #}
+<div class="mx-auto max-w-xl rounded-3xl border border-red-400/20 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-8">
+  <div class="flex flex-col items-center text-center">
+    <span class="flex size-14 items-center justify-center rounded-2xl bg-red-500/15 text-red-300 ring-1 ring-red-400/30" aria-hidden="true">
+      <i class="bi bi-exclamation-triangle text-2xl"></i>
+    </span>
+    <h2 class="mt-5 text-xl font-semibold text-white">Confirmar exclusão</h2>
+    <p class="mt-2 text-slate-300">
+      Tem certeza de que deseja excluir {{ kind }} <strong class="font-semibold break-words text-white">{{ name }}</strong>?
+    </p>
+    <p class="mt-1 text-sm text-slate-400">Esta ação não pode ser desfeita.</p>
+  </div>
+
+  <form method="post" class="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-center">
+    {% csrf_token %}
+    <a href="{{ cancel_url }}"
+      class="inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-200 ring-1 ring-white/15 motion-safe:transition hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      Cancelar
+    </a>
+    <button type="submit"
+      class="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-red-900/40 motion-safe:transition hover:bg-red-500 focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 focus-visible:outline-none">
+      <i class="bi bi-trash" aria-hidden="true"></i> Excluir
+    </button>
+  </form>
+</div>
