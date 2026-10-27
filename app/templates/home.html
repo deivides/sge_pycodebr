@@ -5,6 +5,10 @@
 {% block content %}
   {% include 'components/_page_header.html' with title='Dashboard' subtitle='Visão geral do estoque e das vendas.' %}
 
+  {% if perms.products.view_product %}
+    {% include 'components/_agent_panel.html' %}
+  {% endif %}
+
   <div class="space-y-8">
     {% if perms.products.view_product and perms.inflows.view_inflow %}
       {% include 'components/_product_metrics.html' %}
@@ -55,6 +59,84 @@
 {% endblock %}
 
 {% block extra_js %}
+  {% if perms.products.view_product %}
+    <script>
+      (function () {
+        var panel = document.getElementById('agent-panel');
+        var refreshBtn = document.getElementById('agent-refresh');
+        var refreshIcon = document.getElementById('agent-refresh-icon');
+        var csrfToken = '{{ csrf_token }}';
+        var kinds = {
+          alerta: { label: 'Alerta', icon: 'bi bi-exclamation-triangle', color: 'text-rose-300' },
+          oportunidade: { label: 'Oportunidade', icon: 'bi bi-lightbulb', color: 'text-teal-300' },
+          tendencia: { label: 'Tendência', icon: 'bi bi-graph-up-arrow', color: 'text-violet-300' },
+          info: { label: 'Informação', icon: 'bi bi-info-circle', color: 'text-sky-300' }
+        };
+
+        function show(state) {
+          ['loading', 'error', 'result'].forEach(function (name) {
+            var el = document.getElementById('agent-' + name);
+            el.classList.toggle('hidden', name !== state);
+            el.classList.toggle('flex', name === 'error' && state === 'error');
+          });
+          panel.setAttribute('aria-busy', state === 'loading' ? 'true' : 'false');
+        }
+
+        // Model output is inserted as text only, never as HTML.
+        function render(data) {
+          document.getElementById('agent-summary').textContent = data.summary;
+          var list = document.getElementById('agent-insights');
+          var template = document.getElementById('agent-insight-template');
+          list.replaceChildren();
+          data.insights.forEach(function (insight) {
+            var kind = kinds[insight.kind] || kinds.info;
+            var item = template.content.cloneNode(true);
+            item.querySelector('[data-kind-label]').classList.add(kind.color);
+            item.querySelector('[data-kind-icon]').className = kind.icon;
+            item.querySelector('[data-kind-text]').textContent = kind.label;
+            item.querySelector('[data-title]').textContent = insight.title;
+            item.querySelector('[data-detail]').textContent = insight.detail;
+            list.appendChild(item);
+          });
+          var when = new Date(data.generated_at);
+          document.getElementById('agent-updated').textContent =
+            'Atualizado às ' + when.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+          show('result');
+        }
+
+        function load(refresh) {
+          show('loading');
+          refreshBtn.disabled = true;
+          refreshIcon.classList.add('motion-safe:animate-spin');
+          fetch(panel.dataset.url, {
+            method: refresh ? 'POST' : 'GET',
+            headers: refresh ? { 'X-CSRFToken': csrfToken } : {},
+            credentials: 'same-origin'
+          })
+            .then(function (response) {
+              return response.json().catch(function () { return {}; }).then(function (body) {
+                if (!response.ok) throw new Error(body.error || 'Não foi possível carregar os insights agora.');
+                return body;
+              });
+            })
+            .then(render)
+            .catch(function (error) {
+              document.getElementById('agent-error-text').textContent =
+                error instanceof TypeError ? 'Falha de conexão com o servidor.' : error.message;
+              document.getElementById('agent-updated').textContent = '';
+              show('error');
+            })
+            .finally(function () {
+              refreshBtn.disabled = false;
+              refreshIcon.classList.remove('motion-safe:animate-spin');
+            });
+        }
+
+        refreshBtn.addEventListener('click', function () { load(true); });
+        load(false);
+      })();
+    </script>
+  {% endif %}
   {% if perms.outflows.view_outflow or perms.products.view_product %}
     {% if perms.outflows.view_outflow %}
       {{ daily_sales_data|json_script:"daily-sales-data" }}

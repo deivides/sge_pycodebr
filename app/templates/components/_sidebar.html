@@ -3,7 +3,7 @@
 <div id="sidebar-backdrop" class="fixed inset-0 z-40 hidden bg-slate-950/70 backdrop-blur-sm lg:hidden" aria-hidden="true"></div>
 
 <aside id="sidebar" aria-label="Menu principal"
-  class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-white/10 bg-slate-900/80 backdrop-blur-xl motion-safe:transition-transform motion-safe:duration-300 lg:translate-x-0">
+  class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col border-r border-white/10 bg-slate-900/80 backdrop-blur-xl motion-safe:transition-transform motion-safe:duration-300 lg:translate-x-0 lg:collapsed:-translate-x-full">
 
   {# Brand #}
   <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-white/10 px-5">
@@ -20,9 +20,10 @@
         <span class="block text-xs text-slate-400">Gestão de Estoque</span>
       </span>
     </a>
-    <button type="button" id="sidebar-close" aria-label="Fechar menu"
-      class="flex size-9 items-center justify-center rounded-lg text-slate-300 hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none lg:hidden">
-      <i class="bi bi-x-lg" aria-hidden="true"></i>
+    <button type="button" id="sidebar-close" aria-controls="sidebar" aria-label="Fechar menu" title="Fechar menu"
+      class="flex size-9 items-center justify-center rounded-lg text-slate-300 hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+      <i class="bi bi-x-lg lg:hidden" aria-hidden="true"></i>
+      <i class="bi bi-chevron-double-left hidden lg:inline" aria-hidden="true"></i>
     </button>
   </div>
 

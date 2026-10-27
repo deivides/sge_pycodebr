@@ -1,0 +1,64 @@
+{# SGE agent: AI insights loaded asynchronously from agent_insights #}
+<section id="agent-panel" data-url="{% url 'agent_insights' %}" aria-labelledby="agent-title" aria-busy="true"
+  class="relative mb-8 overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-violet-600/15 via-indigo-600/10 to-teal-500/10 p-5 shadow-2xl shadow-black/30 backdrop-blur-xl sm:p-6">
+  <div aria-hidden="true" class="pointer-events-none absolute -top-24 -right-24 size-64 rounded-full bg-violet-500/20 blur-3xl"></div>
+
+  <div class="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <div class="flex items-start gap-4">
+      <span class="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-indigo-500 to-teal-400 text-white shadow-lg shadow-indigo-900/50" aria-hidden="true">
+        <i class="bi bi-stars text-xl"></i>
+      </span>
+      <div>
+        <h2 id="agent-title" class="flex items-center gap-2 text-lg font-semibold text-white">
+          Agente SGE
+          <span class="rounded-full bg-white/10 px-2 py-0.5 text-[0.65rem] font-semibold tracking-wider text-teal-200 uppercase ring-1 ring-white/10">IA</span>
+        </h2>
+        <p class="text-sm text-slate-300">Insights gerados por inteligência artificial com base nos registros do sistema.</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 sm:shrink-0">
+      <p id="agent-updated" class="text-xs text-slate-400" aria-live="polite"></p>
+      <button type="button" id="agent-refresh" disabled
+        class="inline-flex items-center gap-2 rounded-xl bg-white/10 px-3.5 py-2 text-sm font-semibold text-white ring-1 ring-white/10 motion-safe:transition hover:bg-white/15 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-60">
+        <i id="agent-refresh-icon" class="bi bi-arrow-clockwise" aria-hidden="true"></i> Atualizar
+      </button>
+    </div>
+  </div>
+
+  {# Loading #}
+  <div id="agent-loading" class="relative mt-5" role="status">
+    <p class="flex items-center gap-2 text-sm text-slate-300">
+      <svg class="size-4 motion-safe:animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" class="opacity-25" /><path fill="currentColor" class="opacity-75" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" /></svg>
+      Analisando os registros do estoque...
+    </p>
+    <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4" aria-hidden="true">
+      <div class="h-28 rounded-2xl bg-white/5 motion-safe:animate-pulse"></div>
+      <div class="h-28 rounded-2xl bg-white/5 motion-safe:animate-pulse"></div>
+      <div class="hidden h-28 rounded-2xl bg-white/5 motion-safe:animate-pulse md:block"></div>
+      <div class="hidden h-28 rounded-2xl bg-white/5 motion-safe:animate-pulse xl:block"></div>
+    </div>
+  </div>
+
+  {# Error #}
+  <div id="agent-error" role="alert" class="relative mt-5 hidden items-start gap-3 rounded-xl border border-amber-400/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+    <i class="bi bi-exclamation-triangle mt-0.5" aria-hidden="true"></i>
+    <p id="agent-error-text"></p>
+  </div>
+
+  {# Result #}
+  <div id="agent-result" class="relative mt-5 hidden">
+    <p id="agent-summary" class="text-base text-slate-100"></p>
+    <ul id="agent-insights" class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4"></ul>
+    <p class="mt-4 text-xs text-slate-400"><i class="bi bi-info-circle" aria-hidden="true"></i> Conteúdo gerado por IA. Confira os números antes de tomar decisões.</p>
+  </div>
+</section>
+
+<template id="agent-insight-template">
+  <li class="rounded-2xl border border-white/10 bg-slate-950/40 p-4">
+    <p class="flex items-center gap-2 text-xs font-semibold tracking-wider uppercase" data-kind-label>
+      <i aria-hidden="true" data-kind-icon></i><span data-kind-text></span>
+    </p>
+    <h3 class="mt-2 font-semibold text-white" data-title></h3>
+    <p class="mt-1 text-sm text-slate-300" data-detail></p>
+  </li>
+</template>

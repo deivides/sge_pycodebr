@@ -1,11 +1,12 @@
 {% if user.is_authenticated %}
-{# Mobile top bar: the sidebar is a drawer below the lg breakpoint #}
-<header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-white/10 bg-slate-950/70 px-4 backdrop-blur-xl sm:px-6 lg:hidden">
-  <button type="button" id="sidebar-open" aria-controls="sidebar" aria-expanded="false" aria-label="Abrir menu"
-    class="flex size-10 items-center justify-center rounded-xl text-slate-200 ring-1 ring-white/10 hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
+{# Top bar: opens the drawer on mobile and collapses/expands the sidebar on desktop #}
+<header class="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-white/10 bg-slate-950/70 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+  <button type="button" id="sidebar-toggle" aria-controls="sidebar" aria-expanded="false" aria-label="Alternar menu" title="Alternar menu"
+    class="flex size-10 items-center justify-center rounded-xl text-slate-200 ring-1 ring-white/10 motion-safe:transition hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none">
     <i class="bi bi-list text-xl" aria-hidden="true"></i>
   </button>
-  <a href="{% url 'home' %}" class="flex items-center gap-2">
+  {# Brand shows here only while the sidebar is hidden #}
+  <a href="{% url 'home' %}" class="flex items-center gap-2 lg:hidden lg:collapsed:flex">
     <span class="flex size-8 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 via-indigo-500 to-teal-400" aria-hidden="true">
       <svg class="size-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 8l-9-5-9 5 9 5 9-5z" />

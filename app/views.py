@@ -1,6 +1,8 @@
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.http import JsonResponse
 from django.shortcuts import render
-from . import metrics
+from django.views.decorators.http import require_http_methods
+from . import agent, metrics
 
 
 @login_required(login_url='login')
@@ -22,3 +24,16 @@ def home(request):
     }
 
     return render(request, 'home.html', context)
+
+
+@login_required(login_url='login')
+@permission_required('products.view_product', raise_exception=True)
+@require_http_methods(['GET', 'POST'])
+def agent_insights(request):
+    # GET returns cached insights; POST asks for a fresh analysis.
+    include_sales = request.user.has_perm('outflows.view_outflow')
+    try:
+        insights = agent.get_insights(include_sales, refresh=request.method == 'POST')
+    except agent.AgentError as error:
+        return JsonResponse({'error': str(error)}, status=503)
+    return JsonResponse(insights)
